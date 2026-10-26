@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4학년 4반 토의 주제 정하기</title>
+<style>
+  :root{--navy:#243b64;--blue:#4f7cff;--sky:#eaf4ff;--yellow:#ffe69a;--ink:#243047;--muted:#64748b}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif;background:linear-gradient(135deg,#f3f8ff,#fff9e9);color:var(--ink);padding:24px}
+  .app{max-width:900px;margin:0 auto}
+  header{text-align:center;padding:12px 12px 22px}
+  .pill{display:inline-block;background:#e1edff;color:#3158a6;padding:7px 14px;border-radius:999px;font-weight:700;font-size:14px}
+  h1{font-size:clamp(27px,4vw,40px);margin:14px 0 8px;color:var(--navy)}
+  header p{margin:0;color:var(--muted);font-size:16px}
+  .layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+  .panel{background:#fff;border:1px solid #e1e9f5;border-radius:22px;padding:24px;box-shadow:0 10px 30px #28466b12}
+  .panel h2{font-size:21px;margin:0 0 18px;color:var(--navy)}
+  label{display:block;font-weight:700;margin:17px 0 8px}
+  input,textarea{width:100%;border:2px solid #dbe5f2;border-radius:12px;padding:13px 14px;font:inherit;background:#fbfdff;outline:none}
+  input:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px #4f7cff20}
+  textarea{resize:vertical;min-height:120px;line-height:1.6}
+  .hint{font-size:13px;color:var(--muted);margin-top:7px}
+  .actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:22px}
+  button,.padlet{border:0;border-radius:12px;padding:13px 17px;font:inherit;font-weight:800;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .12s,filter .12s}
+  button:hover,.padlet:hover{filter:brightness(.97);transform:translateY(-1px)}
+  .primary{background:var(--blue);color:#fff;flex:1}
+  .secondary{background:#eef3fb;color:var(--navy)}
+  .padlet{background:#e0f7ed;color:#146b4c;width:100%;margin-top:12px}
+  .preview-wrap{background:#f6f9ff;border:2px dashed #d4e2f7;border-radius:16px;padding:12px;text-align:center}
+  canvas{display:block;width:100%;height:auto;border-radius:10px;background:white}
+  .empty{padding:46px 12px;color:var(--muted);line-height:1.8}
+  .small{font-size:13px;color:var(--muted);line-height:1.6;margin-top:12px}
+  footer{text-align:center;color:#718096;font-size:12px;margin:20px 0 0}
+  @media(max-width:700px){body{padding:14px}.layout{grid-template-columns:1fr}.panel{padding:18px}}
+  @media print{body{background:#fff;padding:0}.app header,.form-panel,.preview-panel h2,.preview-panel .small,footer{display:none!important}.layout{display:block}.preview-panel{border:0;box-shadow:none;padding:0}.preview-wrap{border:0;padding:0}canvas{width:100%;max-width:100%;border-radius:0}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <span class="pill">함께 생각하고, 함께 해결해요!</span>
+    <h1>우리 반 토의 주제 정하기 💡</h1>
+    <p>친구들과 함께 해결하고 싶은 문제와 그 까닭을 적어 보세요.</p>
+  </header>
+  <main class="layout">
+    <section class="panel form-panel">
+      <h2>✏️ 나의 생각 쓰기</h2>
+      <label for="studentName">4학년 4반 이름</label>
+      <input id="studentName" type="text" placeholder="예: 김하늘" maxlength="20">
+      <label for="topic">친구들과 함께 토의하고 싶은 주제</label>
+      <textarea id="topic" maxlength="180" placeholder="예: 우리 교실에서 쓰레기를 줄이려면 어떻게 해야 할까?"></textarea>
+      <label for="reason">그 주제를 고른 까닭</label>
+      <textarea id="reason" maxlength="240" placeholder="예: 쉬는 시간 뒤에 쓰레기가 많이 생기고, 우리 모두가 함께 실천할 수 있는 방법을 찾고 싶기 때문이다."></textarea>
+      <div class="hint">💬 한 가지 문제를 정하고, 왜 함께 이야기하고 싶은지 구체적으로 써 보세요.</div>
+      <div class="actions">
+        <button class="primary" id="makeBtn">🖼️ 이미지 만들기</button>
+        <button class="secondary" id="resetBtn" type="button">다시 쓰기</button>
+      </div>
+      <a class="padlet" href="https://joo.is/mj2644" target="_blank" rel="noopener noreferrer">📌 패들렛에 올리기 ↗</a>
+    </section>
+    <section class="panel preview-panel">
+      <h2>🌈 나의 토의 주제 카드</h2>
+      <div class="preview-wrap" id="previewWrap">
+        <div class="empty" id="emptyMsg">왼쪽에 이름과 생각을 쓴 다음<br><b>‘이미지 만들기’</b>를 눌러 주세요.<br>완성된 카드를 PNG 이미지로 저장할 수 있어요.</div>
+        <canvas id="cardCanvas" width="1200" height="1500" hidden></canvas>
+      </div>
+      <div class="actions" id="outputActions" hidden>
+        <button class="primary" id="downloadBtn">⬇️ PNG 이미지 저장</button>
+        <button class="secondary" id="printBtn">🖨️ 인쇄 / PDF</button>
+      </div>
+      <p class="small">이미지 저장 후 패들렛 버튼을 눌러 게시물에 첨부하세요. 이 웹앱은 작성 내용을 별도 서버에 저장하지 않습니다.</p>
+    </section>
+  </main>
+  <footer>4학년 4반 · 문제 해결을 위한 토의 준비</footer>
+</div>
+<script>
+const $ = id => document.getElementById(id);
+const canvas = $('cardCanvas');
+const ctx = canvas.getContext('2d');
+let generated = false;
+
+function roundedRect(x,y,w,h,r,fill){
+  ctx.beginPath(); ctx.roundRect(x,y,w,h,r); ctx.fillStyle=fill; ctx.fill();
+}
+function wrapText(text, x, y, maxWidth, lineHeight, maxLines, color, font){
+  ctx.fillStyle=color; ctx.font=font; ctx.textAlign='left'; ctx.textBaseline='top';
+  const paragraphs=String(text || '').split('\\n');
+  let lines=[];
+  for(const para of paragraphs){
+    if(!para){lines.push('');continue;}
+    let line='';
+    for(const ch of para){
+      if(ctx.measureText(line+ch).width>maxWidth && line){lines.push(line);line=ch;}else line+=ch;
+    }
+    if(line)lines.push(line);
+  }
+  if(lines.length>maxLines){lines=lines.slice(0,maxLines);let last=lines[maxLines-1];while(ctx.measureText(last+'…').width>maxWidth&&last.length)last=last.slice(0,-1);lines[maxLines-1]=last+'…';}
+  lines.forEach((line,i)=>ctx.fillText(line,x,y+i*lineHeight));
+  return y+lines.length*lineHeight;
+}
+function makeCard(){
+  const name=$('studentName').value.trim();
+  const topic=$('topic').value.trim();
+  const reason=$('reason').value.trim();
+  if(!name || !topic || !reason){alert('이름, 토의 주제, 그 까닭을 모두 작성해 주세요.');return;}
+  ctx.clearRect(0,0,1200,1500);
+  // soft background
+  const grad=ctx.createLinearGradient(0,0,1200,1500);grad.addColorStop(0,'#eff7ff');grad.addColorStop(1,'#fff8e8');
+  ctx.fillStyle=grad;ctx.fillRect(0,0,1200,1500);
+  roundedRect(55,55,1090,1390,42,'#ffffff');
+  roundedRect(90,90,1020,210,30,'#4f7cff');
+  ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.font='bold 34px sans-serif';ctx.fillStyle='#e7efff';ctx.fillText('4학년 4반 · 문제 해결 토의',600,135);
+  ctx.font='bold 58px sans-serif';ctx.fillStyle='#ffffff';ctx.fillText('우리의 생각을 모아요!',600,220);
+  // name strip
+  roundedRect(115,340,970,100,24,'#fff1b8');
+  ctx.textAlign='left';ctx.fillStyle='#243b64';ctx.font='bold 34px sans-serif';ctx.fillText('✏️ 이름',155,390);
+  ctx.font='bold 38px sans-serif';ctx.fillText(name,330,390);
+  // topic
+  roundedRect(115,490,970,360,28,'#edf5ff');
+  ctx.fillStyle='#3158a6';ctx.font='bold 36px sans-serif';ctx.fillText('💡 함께 토의하고 싶은 주제',155,545);
+  wrapText(topic,155,610,890,60,4,'#243047','bold 43px sans-serif');
+  // reason
+  roundedRect(115,900,970,390,28,'#fff8e6');
+  ctx.fillStyle='#946600';ctx.font='bold 36px sans-serif';ctx.fillText('💬 그 주제를 고른 까닭',155,955);
+  wrapText(reason,155,1020,890,54,5,'#243047','38px sans-serif');
+  // footer
+  ctx.textAlign='center';ctx.fillStyle='#718096';ctx.font='28px sans-serif';ctx.fillText('친구의 생각도 귀 기울여 듣고, 함께 해결 방법을 찾아요!',600,1365);
+  $('emptyMsg').hidden=true;canvas.hidden=false;$('outputActions').hidden=false;generated=true;
+}
+$('makeBtn').addEventListener('click',makeCard);
+$('downloadBtn').addEventListener('click',()=>{
+  if(!generated)return;
+  const a=document.createElement('a');
+  a.download='4학년4반_토의주제_'+(($('studentName').value.trim()||'학생').replace(/[\\\\/:*?"<>|]/g,''))+'.png';
+  a.href=canvas.toDataURL('image/png');a.click();
+});
+$('printBtn').addEventListener('click',()=>{if(generated)window.print();});
+$('resetBtn').addEventListener('click',()=>{
+  $('studentName').value='';$('topic').value='';$('reason').value='';
+  generated=false;canvas.hidden=true;$('emptyMsg').hidden=false;$('outputActions').hidden=true;
+});
+</script>
+</body>
+</html>
